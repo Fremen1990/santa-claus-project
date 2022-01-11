@@ -32,8 +32,25 @@ class GiftRecord {
 
     static async listAll() {
         const [results] = await pool.execute('SELECT * FROM `gifts`');
-        return results;
+        return results.map(obj => new GiftRecord(obj));
     }
+
+    static async getOne(id) {
+        const [results] = await pool.execute('SELECT * FROM `gifts` WHERE `id` = :id', {
+            id,
+        });
+        return results.length === 0 ? null : new GiftRecord(results[0]);
+    }
+
+    async countGivenGifts() {
+        const [[{count}]] /*  const resuly[0][0].count  */ = await pool.execute("SELECT COUNT(*) AS `count` FROM" +
+            " `children` WHERE" +
+            " `giftId`=:id",{
+            id:this.id,
+        })
+        return count;
+    }
+
 
 }
 
