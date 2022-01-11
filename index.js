@@ -1,12 +1,15 @@
-//Routes
-const {childRouter} =require("./routers/child");
-const {homeRouter} = require("./routers/home");
-const {giftRouter} = require("./routers/gift");
-
 const express = require('express');
+require('express-async-errors');
 const methodOverride = require('method-override');
 const {engine} = require('express-handlebars');
 const {handleError} = require("./utils/errors");
+
+//Routes
+const {homeRouter} = require("./routers/home");
+const {childRouter} = require("./routers/child");
+const {giftRouter} = require("./routers/gift");
+require('./utils/db');
+const {handlebarsHelpers} = require("./utils/handlebars-helpers");
 
 const app = express();
 
@@ -20,7 +23,7 @@ app.use(express.static('public'));
 
 app.engine('.hbs', engine({
     extname: '.hbs',
-    // helpers: handlebarsHelpers, //  additional functionality to handlebars
+    helpers: handlebarsHelpers, //  additional functionality to handlebars
 }));
 
 app.set('view engine', '.hbs');
@@ -28,8 +31,6 @@ app.set('view engine', '.hbs');
 app.use('/', homeRouter);
 app.use('/child', childRouter);
 app.use('/gift', giftRouter)
-
-
 
 
 app.use(handleError);
